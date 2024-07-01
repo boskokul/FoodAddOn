@@ -5,7 +5,7 @@
   "manifest_version": 3,
   "content_scripts": [
     {
-      "matches": ["https://officebite.io/*"],
+      "matches": ["https://app.officebite.io/*"],
       "css": ["main.css"],
       "js": ["main.js"]
     }
