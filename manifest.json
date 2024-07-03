@@ -1,6 +1,6 @@
 {
   "name": "Food add on",
-  "description": "Radi nesto",
+  "description": "Removes meals that are not available for ordering",
   "version": "1.0",
   "manifest_version": 3,
   "content_scripts": [
