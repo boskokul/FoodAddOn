@@ -1,6 +1,6 @@
 {
   "name": "Food add on",
-  "description": "Removes meals that are not available for ordering and extraxt desserts",
+  "description": "Removes meals that are not available for ordering and extraxts desserts",
   "version": "2.0",
   "manifest_version": 3,
   "content_scripts": [

@@ -70,7 +70,7 @@ function extractDesserts() {
   let currentTypeOfMeal = "";
   let targetArray = Array.from(targetElements);
   console.log(targetArray.length);
-  for (let i = 0; i < targetArray.length - 1; i++) {
+  for (let i = 0; i < targetArray.length; i++) {
     // if (i === 5 || i === 2) {
     let menuItem = targetArray[i].children;
 
@@ -115,39 +115,45 @@ function extractDesserts() {
     spisak.forEach((item) => {
       targetArray[targetArray.length - 1].appendChild(item.mealNode);
     });
-  }, 2500);
+  }, 3000);
 }
 
 function moveDessertsBack() {
   let targetElements = document.querySelectorAll(".catering__section");
   let targetArray = Array.from(targetElements);
-  for (let i = 0; i < targetArray.length - 1; i++) {
-    // if (i === 5 || i === 2) {
-    // spisak.forEach((item) => {
-    //   targetArray[targetArray.length - 1].removeChild(item.mealNode);
-    // });
-    let menuItem = targetArray[i].children;
-
-    for (let j = 1; j < menuItem.length; j++) {
-      spisak.forEach((item) => {
-        if (item.x === i && item.pushedBack === false) {
-          console.log(item.x, item.y);
-          item.pushedBack = true;
-          targetArray[i].appendChild(item.mealNode);
+  for (let i = 0; i <= targetArray.length - 1; i++) {
+    // for (let j = 1; j < menuItem.length; j++) {
+    spisak.forEach((item) => {
+      if (item.x === i && item.pushedBack === false) {
+        console.log(item.x, item.y);
+        item.pushedBack = true;
+        targetArray[i].appendChild(item.mealNode);
+      }
+    });
+    if (i === targetArray.length - 1) {
+      let menuItem = targetArray[i].children;
+      for (let j = 1; j < menuItem.length; j++) {
+        let meal = menuItem[j];
+        // console.log("EHEEHEHHH");
+        if (meal.textContent === "OVO SU SVI KOLACI") {
+          meal.style.display = "none";
         }
-      });
+      }
     }
+    // }
   }
 }
 
 var button = document.createElement("button");
 function addButtonToPage() {
   console.log("Button!");
-  button.textContent = "Prikazi samo kolace izdvojeno";
+  button.textContent = "Prikazi na dnu sve kolace izdvojeno";
   button.style.margin = "0 15px 10px 15px";
   button.addEventListener("click", function () {
     console.log("Kliknuto!");
-    setTimeout(extractDesserts(), 1000);
+    setTimeout(function () {
+      extractDesserts();
+    }, 2000);
     isClicked = true;
     button.disabled = true;
   });
