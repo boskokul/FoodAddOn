@@ -12,6 +12,7 @@ function hideLockedMenuItems() {
 
       if (!isItemAvailable) {
         meal.style.display = "none";
+      } else {
       }
     }
   });
@@ -45,24 +46,110 @@ observer.observe(document.documentElement, {
 function setListenersLeftRightButtons() {
   let leftButton = document.querySelector(".menu-calendar__arrow--left");
   leftButton.addEventListener("click", function () {
-    console.log("KliknutoL!");
-    hideDesserts();
+    moveDessertsBack();
+    setTimeout(function () {
+      console.log("KliknutoL!");
+      spisak = [];
+      button.disabled = false;
+    }, 500);
   });
   let rightButton = document.querySelector(".menu-calendar__arrow--right");
   rightButton.addEventListener("click", function () {
-    console.log("KliknutoR!");
-    hideDesserts();
+    moveDessertsBack();
+    setTimeout(function () {
+      console.log("KliknutoL!");
+      spisak = [];
+      button.disabled = false;
+    }, 500);
   });
 }
 
+var spisak = [];
+function extractDesserts() {
+  let targetElements = document.querySelectorAll(".catering__section");
+  let currentTypeOfMeal = "";
+  let targetArray = Array.from(targetElements);
+  console.log(targetArray.length);
+  for (let i = 0; i < targetArray.length - 1; i++) {
+    // if (i === 5 || i === 2) {
+    let menuItem = targetArray[i].children;
+
+    for (let j = 1; j < menuItem.length; j++) {
+      let meal = menuItem[j];
+
+      if (meal.children.length === 0) {
+        currentTypeOfMeal = meal.textContent;
+        continue;
+      }
+
+      if (
+        (currentTypeOfMeal === "Deserti" ||
+          currentTypeOfMeal === "Palačinke" ||
+          currentTypeOfMeal === "Ovsene kaše") &&
+        meal.children.length === 3
+        // || true
+      ) {
+        // console.log(meal.children.length);
+        let item = {
+          mealNode: meal,
+          x: i,
+          y: j,
+          pushedBack: false,
+        };
+        spisak.push(item);
+        // targetArray[i].removeChild(item.mealNode);
+      }
+      // }
+    }
+  }
+  console.log(spisak);
+
+  setTimeout(function () {
+    console.log("SSSSSSSSSSSSSSSSSSSSSSS");
+    let newDiv = document.createElement("div");
+    newDiv.textContent = "OVO SU SVI KOLACI";
+    newDiv.style.padding = "10px 0 10px 0";
+    newDiv.style.color = "black";
+    newDiv.style.fontWeight = "bold";
+    targetArray[targetArray.length - 1].appendChild(newDiv);
+    spisak.forEach((item) => {
+      targetArray[targetArray.length - 1].appendChild(item.mealNode);
+    });
+  }, 2500);
+}
+
+function moveDessertsBack() {
+  let targetElements = document.querySelectorAll(".catering__section");
+  let targetArray = Array.from(targetElements);
+  for (let i = 0; i < targetArray.length - 1; i++) {
+    // if (i === 5 || i === 2) {
+    // spisak.forEach((item) => {
+    //   targetArray[targetArray.length - 1].removeChild(item.mealNode);
+    // });
+    let menuItem = targetArray[i].children;
+
+    for (let j = 1; j < menuItem.length; j++) {
+      spisak.forEach((item) => {
+        if (item.x === i && item.pushedBack === false) {
+          console.log(item.x, item.y);
+          item.pushedBack = true;
+          targetArray[i].appendChild(item.mealNode);
+        }
+      });
+    }
+  }
+}
+
+var button = document.createElement("button");
 function addButtonToPage() {
   console.log("Button!");
-  var button = document.createElement("button");
-  button.textContent = "Prikazi kolace izdvojeno";
-  button.style.margin = "0 0 10px 0";
+  button.textContent = "Prikazi samo kolace izdvojeno";
+  button.style.margin = "0 15px 10px 15px";
   button.addEventListener("click", function () {
     console.log("Kliknuto!");
-    extract();
+    setTimeout(extractDesserts(), 1000);
+    isClicked = true;
+    button.disabled = true;
   });
 
   let leftNavBar = document.querySelector(".catering__nav");
@@ -71,81 +158,5 @@ function addButtonToPage() {
     leftNavBar.insertBefore(button, leftNavBar.firstChild);
   } else {
     leftNavBar.appendChild(button);
-  }
-}
-
-// setTimeout(addButtonToPage, 3000);
-
-function extract() {
-  let meals = {};
-  meals["Deserti"] = [];
-  meals["Palačinke"] = [];
-  meals["Ovsene kaše"] = [];
-  let targetElements = document.getElementsByClassName("catering__section");
-
-  for (let targetElement of targetElements) {
-    let menuItem = targetElement.children;
-
-    let currentTypeOfMeal = "";
-    for (let j = 1; j < menuItem.length; j++) {
-      let meal = menuItem[j];
-
-      if (meal.children.length === 0) {
-        let title = meal.textContent;
-        currentTypeOfMeal = title;
-        if (!(title in meals)) {
-          meals[title] = [];
-        }
-        continue;
-      }
-      // console.log(meal);
-
-      let mealCloned = meal.cloneNode(true);
-      meals[currentTypeOfMeal].push(mealCloned);
-    }
-  }
-  console.log(meals);
-
-  setTimeout(function () {
-    let targetArray = Array.from(targetElements);
-    let newDiv = document.createElement("div");
-    newDiv.textContent = "OVO SU SVI KOLACI";
-    newDiv.style.padding = "10px 0 10px 0";
-    newDiv.style.color = "black";
-    newDiv.style.fontWeight = "bold";
-    targetArray[targetArray.length - 1].appendChild(newDiv);
-    if (meals["Deserti"].length > 0)
-      for (let dessert of meals["Deserti"]) {
-        targetArray[targetArray.length - 1].appendChild(dessert);
-      }
-    if (meals["Palačinke"].length > 0)
-      for (let dessert of meals["Palačinke"]) {
-        targetArray[targetArray.length - 1].appendChild(dessert);
-      }
-    if (meals["Ovsene kaše"].length > 0)
-      for (let dessert of meals["Ovsene kaše"]) {
-        targetArray[targetArray.length - 1].appendChild(dessert);
-      }
-  }, 3000);
-}
-
-function hideDesserts() {
-  let found = false;
-  let targetElements = document.getElementsByClassName("catering__section");
-  for (let targetElement of targetElements) {
-    let menuItem = targetElement.children;
-
-    for (let j = 1; j < menuItem.length; j++) {
-      let meal = menuItem[j];
-
-      if (meal.children.length === 0) {
-        let title = meal.textContent;
-        if (title === "OVO SU SVI KOLACI") {
-          found = true;
-          meal.style.display = "none";
-        }
-      }
-      if (found === true) meal.style.display = "none";
-    }
   }
 }
